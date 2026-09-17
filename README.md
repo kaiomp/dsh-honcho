@@ -162,7 +162,8 @@ different name for any path with the root `sessions` map — an override always 
 `per-directory` and `per-repo` name a session after a folder, so two different projects that both live in a
 `web` directory silently share one memory across machines. `git-remote` is the fix: it reduces the `origin` URL
 to `host/owner/repo`, so `git@github.com:you/web.git` and `https://github.com/you/web` agree, and `you/web` and
-`someone-else/web` do not.
+`someone-else/web` do not. It compares the URL as configured, so machines that clone through different ssh
+`Host` aliases — `github.com-work` on one, `github.com` on the other — still get separate sessions.
 
 **`sessionPrefix`** puts a literal string in front of every generated name — `"vps-"` gives `vps-you-web` — for
 when the machine a session came from should be visible in it. It applies to every strategy. A name pinned in

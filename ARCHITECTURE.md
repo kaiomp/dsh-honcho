@@ -240,7 +240,9 @@ git fact they need is missing, rather than inventing a placeholder that would fo
 strips dsh's `session-` id prefix instead of truncating, because dsh mints ids as `session-<n>` and a fixed
 truncation maps every session to one name; and `git-remote` reads `remote.origin.url` out of the config rather
 than through `git remote get-url`, which applies each machine's own `insteadOf` rewrites and so would defeat
-the point of a cross-machine name.
+the point of a cross-machine name. A port is dropped for the same reason. What stays unreconcilable is a host
+spelled differently per machine: an ssh `Host` alias lives in the stored URL itself, so machines cloning
+through `github.com-work` and `github.com` still land in two sessions.
 
 `sessionPrefix` is a literal string in front of whatever a strategy derives, for making the originating
 machine visible in a shared workspace. It is applied outside the strategy switch and after the `sessions`

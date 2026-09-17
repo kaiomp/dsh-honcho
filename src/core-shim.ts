@@ -442,6 +442,10 @@ function sanitize(value: string): string {
  *
  * Any credentials in a URL go with the `user@` part, so they never reach a
  * session name.
+ *
+ * What it cannot reconcile is a host spelled differently per machine — an ssh
+ * `Host` alias (`github.com-work`) is part of the stored URL, so two machines
+ * that clone through different aliases still get two names.
  */
 function normalizeRemote(url: string): string {
   let value = url.trim().replace(/\/+$/, "").replace(/\.git$/, "");
@@ -449,7 +453,10 @@ function normalizeRemote(url: string): string {
   // scp syntax (`host:path`) is the no-scheme form, and only there is a colon a
   // path separator rather than a port.
   value = scheme.test(value) ? value.replace(scheme, "") : value.replace(":", "/");
-  return value.replace(/^[^/]*@/, "");
+  // A port is addressing, not identity, so `ssh://host:22/o/r` and
+  // `ssh://host/o/r` are one repo. Only reachable in the scheme form: scp
+  // syntax has no port, and its colon became a separator above.
+  return value.replace(/^[^/]*@/, "").replace(/^([^/]+):\d+(?=\/|$)/, "$1");
 }
 
 /**

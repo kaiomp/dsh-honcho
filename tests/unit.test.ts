@@ -292,11 +292,13 @@ describe("sessionName", () => {
       expect(https).toBe(ssh);
     });
 
-    test("a trailing slash, a scheme-qualified ssh URL, and credentials all normalize away", () => {
+    test("trailing slash, scheme-qualified ssh, credentials and an explicit port all normalize away", () => {
       const name = "vineeth-github-com-plastic-labs-dsh-honcho";
       expect(sessionName(gitRemote, repoWith("https://github.com/plastic-labs/dsh-honcho.git/"))).toBe(name);
       expect(sessionName(gitRemote, repoWith("ssh://git@github.com/plastic-labs/dsh-honcho.git"))).toBe(name);
       expect(sessionName(gitRemote, repoWith("https://token@github.com/plastic-labs/dsh-honcho"))).toBe(name);
+      // A port is addressing, not identity.
+      expect(sessionName(gitRemote, repoWith("ssh://git@github.com:22/plastic-labs/dsh-honcho.git"))).toBe(name);
     });
 
     test("two projects sharing a folder name stay apart", () => {
